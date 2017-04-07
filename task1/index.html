@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head> 
+
+<link rel="stylesheet" href="css/style.css">
+<title> Patient Details </title>
+<script type="text/javascript" src="js/jquery.min.js"> </script>
+<style>
+.us
+{
+	color:red;
+	font-size:25px;
+}
+.bs
+{
+	font-family:sans-serif;
+	color: rgba(255, 255, 255, 0.5);
+	font-size:22px;
+}
+</style>
+
+<script type="text/javascript">
+function validate(data)
+{
+	//alert(data);
+	if(data=="0")
+	{
+		validUser=false;
+		$("span#user").html("User name already taken");
+	}
+	else
+	{
+		validUser=true;
+	}
+	
+}
+function handleError()
+{
+}
+
+    
+ function calculate_age(birth_month,birth_day,birth_year)
+{
+    today_date = new Date();
+    today_year = today_date.getFullYear();
+    today_month = today_date.getMonth();
+    today_day = today_date.getDate();
+    age = today_year - birth_year;
+
+    if ( today_month < (birth_month - 1))
+    {
+        age--;
+    }
+    if (((birth_month - 1) == today_month) && (today_day < birth_day))
+    {
+        age--;
+    }
+    return age;
+}
+function validateAge()
+{
+		var age1 = document.getElementById("age");
+		var dob = document.getElementById("dob");
+		var now = new Date();
+		var birthdate = dob.value.split("-");
+		
+		var age2=calculate_age(birthdate[1],birthdate[2],birthdate[0])
+		console.log(age2);
+		if(String(age1.value) != String(age2))
+		{
+			$("span#agee").html("Your age does not correspond to your dob");
+			return false;
+		}
+		else
+		{
+			$("span#agee").html("");
+			return true;
+			
+		}
+}
+function validateUser()
+{
+	var fname = document.getElementById("firstName");
+	var lname = document.getElementById("lastName");
+	var ph = document.getElementById("phoneNo");
+	if(ph.value.length<=16 && ph.value.length>=8)
+	{
+		$.ajax({url:"http://localhost/ass/validation.php?fname="+fname.value+"&lname="+lname.value+"&ph="+ph.value,type:"GET",data:{},success:validate,error:handleError});
+		$("span#ph").html("");
+	}
+	else
+	{
+		$("span#ph").html("Please enter a valid phone number");
+	}
+}
+function foo()
+{
+	
+	if(!validUser)
+		return false;
+	if(!validateAge())
+		return false;
+	return true;
+	
+}
+
+
+</script>
+
+
+</head>
+<body>
+	<div class="form">
+	 <ul class="tab-group">
+        <li class="tab active" style="position:relative;left:130px"><a href="#signup">Sign Up</a></li>
+      </ul>
+	<div class="tab-content">
+        <div id="signup">   
+          <h1>Patient Registration</h1>
+           <span id="ph" class="us"></span>
+           <span id="user" class="us"> </span>
+           <span id="agee" class="us"> </span>
+	<form action="store.php" method="post" onsubmit="return foo()">
+	<div class="top-row">
+            <div class="field-wrap">
+		<p> <label for="firstName">First Name:</label> <input type="text" id="firstName" name="firstName" autocomplete="off" required/> </p></div>
+		<div class="field-wrap"><p> <label for="lastName">Last Name:</label> <input type="text" id="lastName" name="lastName" autocomplete="off" required/> </p></div></div>
+		<div class="field-wrap"><p><label for="phoneNo">Phone No:</label> <input type="number" id="phoneNo" name="phoneNo" autocomplete="off" onblur="validateUser()"required/>  </p></div> 
+		<div class="field-wrap"><p> <label for="age">Age:</label> <input type="number" id="age" name="age" min="1" max="200" autocomplete="off" required/> </p></div>
+		<div class="field-wrap"><p><span class="bs">DOB: </span>  <input type="date" id="dob" name="dob"  required/> </p></div>
+		<div class="field-wrap"><p> <span class="bs">Gender: </span> <select id="gender" name="gender" required> <option value="Male">Male</option> <option value="Female">Female</option> </select> </p></div>
+		<div class="field-wrap"><p> <label>Free text:</label> <input type="text" id="freeText" name="freeText" autocomplete="off"/>  </p></div>
+		<p> <input type="submit" value="Store Details"/> </p>
+	</form>
+	 </div>
+       </div>
+	</div>
+</body>
+
+
+    <script src="js/index.js"></script>
+
+	
+</html>
